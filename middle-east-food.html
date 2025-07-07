@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Middle East Food Market</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 sticky top-0 z-10">
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-red-600">Middle East Market</h1>
+
+      <!-- Hamburger Icon -->
+      <button class="md:hidden text-gray-700" id="menu-toggle">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Collapsible Menu -->
+    <div id="menu" class="mt-4 md:mt-0 hidden md:flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex flex-col md:flex-row md:gap-4">
+        <a href="index.html" class="text-gray-700 hover:text-red-600">🏠 Home</a>
+        <a href="#traditional" class="text-gray-700 hover:text-red-600">🍽 Traditional</a>
+        <a href="#meat" class="text-gray-700 hover:text-red-600">🥩 Meat</a>
+        <a href="#fastfood" class="text-gray-700 hover:text-red-600">🍕 Fast Food </a>
+      </div>
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
+        <input type="text" id="search" placeholder="Search..." class="px-3 py-1 border rounded-md focus:outline-none">
+        <button id="cart-btn" class="bg-red-600 text-white px-4 py-2 rounded">Cart (<span id="cart-count">0</span>)</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Traditional Food -->
+  <section id="traditional" class="p-6 scroll-mt-24">
+    <h2 class="text-2xl font-bold mb-4">🍽 Traditional Food</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="traditional-section"></div>
+  </section>
+
+  <!-- Meat Section -->
+  <section id="meat" class="p-6 scroll-mt-24">
+    <h2 class="text-2xl font-bold mb-4">🥩 Meat Dishes</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="meat-section"></div>
+  </section>
+
+  <!-- Fast Food Section -->
+  <section id="fastfood" class="p-6 scroll-mt-24">
+    <h2 class="text-2xl font-bold mb-4">🍕 Fast Food & Pizza</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="fastfood-section"></div>
+  </section>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded w-96 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl font-bold mb-4">Shopping Cart</h2>
+      <ul id="cart-items" class="mb-4 space-y-2"></ul>
+      <div class="font-bold mb-4">Total: $<span id="cart-total">0.00</span></div>
+      <button onclick="toggleCart()" class="bg-red-500 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Hamburger toggle
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('hidden');
+    });
+
+  const products = [
+  // Traditional Food (20 items)
+  { id: 1, name: "Kabsa", price: 8.5, image: "./images/food/Kabsa.webp", category: "traditional" },
+  { id: 2, name: "Dolma", price: 6, image: "./images/food/Dolma.webp", category: "traditional" },
+  { id: 3, name: "Mansaf", price: 9.5, image: "./images/food/Mansaf.avif", category: "traditional" },
+  { id: 4, name: "Makloubeh", price: 8, image: "./images/food/Makloubeh.webp", category: "traditional" },
+  { id: 5, name: "Kibbeh", price: 7, image: "./images/food/Kibbeh.webp", category: "traditional" },
+  { id: 6, name: "Fattoush", price: 5.5, image: "./images/food/Fattoush.webp", category: "traditional" },
+  { id: 7, name: "Tabbouleh", price: 5.5, image: "./images/food/Tabbouleh.webp", category: "traditional" },
+  { id: 8, name: "Hummus", price: 4.5, image: "./images/food/Hummus.webp", category: "traditional" },
+  { id: 9, name: "Moutabal", price: 4.5, image: "./images/food/Moutabal.webp", category: "traditional" },
+  { id: 10, name: "Ful Medames", price: 4, image: "./images/food/Ful Medames.webp", category: "traditional" },
+  { id: 11, name: "Sambousek", price: 3.5, image: "./images/food/Sambousek.webp", category: "traditional" },
+  { id: 12, name: "Lentil Soup", price: 4, image: "./images/food/Lentil Soup.webp", category: "traditional" },
+  { id: 13, name: "Warak Enab", price: 5, image: "./images/food/Warak Enab.webp", category: "traditional" },
+  { id: 14, name: "Fasolia", price: 6, image: "./images/food/Fasolia.webp", category: "traditional" },
+  { id: 15, name: "Mjadra", price: 5.5, image: "./images/food/Mjadra.webp", category: "traditional" },
+  { id: 16, name: "Sayadieh", price: 9, image: "./images/food/Sayadieh.webp", category: "traditional" },
+  { id: 17, name: "Batata Harra", price: 4.5, image: "./images/food/Batata Harra.webp", category: "traditional" },
+  { id: 18, name: "Kofta Bil Sanieh", price: 7.5, image: "./images/food/Kofta Bil Sanieh.webp", category: "traditional" },
+  { id: 19, name: "Shorbat Adas", price: 4, image: "./images/food/Shorbat Adas.webp", category: "traditional" },
+  { id: 20, name: "Samak Meshwi", price: 10, image: "./images/food/Samak Meshwi.jpg", category: "traditional" },
+
+  // Meat Dishes (20 items)
+  { id: 21, name: "Kofta", price: 7, image: "./images/food/Kofta.webp", category: "meat" },
+  { id: 22, name: "Shish Kebab", price: 9, image: "./images/food/Shish Kebab.avif", category: "meat" },
+  { id: 23, name: "Lamb Chops", price: 12, image: "./images/food/Lamb Chops.webp", category: "meat" },
+  { id: 24, name: "Beef Shawarma", price: 8, image: "./images/food/Beef Shawarma.webp", category: "meat" },
+  { id: 25, name: "Chicken Kabsa", price: 8.5, image: "./images/food/Chicken Kabsa.webp", category: "meat" },
+  { id: 26, name: "Grilled Lamb", price: 13, image: "./images/food/Grilled Lamb.webp", category: "meat" },
+  { id: 27, name: "Chicken Kofta", price: 7.5, image: "./images/food/Chicken Kofta.jpg", category: "meat" },
+  { id: 28, name: "Mixed Grill", price: 15, image: "./images/food/Mixed Grill.avif", category: "meat" },
+  { id: 29, name: "Lamb Mandi", price: 11, image: "./images/food/Lamb Mandi.webp", category: "meat" },
+  { id: 30, name: "Beef Kebab", price: 9, image: "./images/food/Beef Kebab.webp", category: "meat" },
+  { id: 31, name: "Chicken Tikka", price: 8, image: "./images/food/Chicken Tikka.webp", category: "meat" },
+  { id: 32, name: "Stuffed Lamb", price: 14, image: "./images/food/Stuffed Lamb.jpg", category: "meat" },
+  { id: 33, name: "Lamb Tagine", price: 13, image: "./images/food/Lamb Tagine.webp", category: "meat" },
+  { id: 34, name: "Beef Moussaka", price: 9, image: "./images/food/Beef Moussaka.jpg", category: "meat" },
+  { id: 35, name: "Chicken Meshwi", price: 8, image: "./images/food/Chicken Meshwi.jpg", category: "meat" },
+  { id: 36, name: "Lamb Kebbeh", price: 10, image: "./images/food/Lamb Kebbeh.webp", category: "meat" },
+  { id: 37, name: "Beef Shawarma Plate", price: 9.5, image: "./images/food/Beef Shawarma Plate.avif", category: "meat" },
+  { id: 38, name: "Chicken Shawarma Plate", price: 9, image: "./images/food/Chicken Shawarma Plate.webp", category: "meat" },
+  { id: 39, name: "Grilled Beef Ribs", price: 14, image: "./images/food/Grilled Beef Ribs.webp", category: "meat" },
+  { id: 40, name: "Lamb Chops Special", price: 15, image: "./images/food/Lamb Chops Special.jpg", category: "meat" },
+
+  // Fast Food & Pizza (20 items)
+  { id: 41, name: "Shawarma", price: 5, image: "./images/food/Shawarma.avif", category: "fastfood" },
+  { id: 42, name: "Falafel Wrap", price: 4.5, image: "./images/food/Falafel Wrap.webp", category: "fastfood" },
+  { id: 43, name: "Middle Eastern Pizza", price: 6.5, image: "./images/food/Middle Eastern Pizza.avif", category: "fastfood" },
+  { id: 44, name: "Manakish Zaatar", price: 4, image: "./images/food/Manakish Zaatar.webp", category: "fastfood" },
+  { id: 45, name: "Manakish Cheese", price: 4.5, image: "./images/food/Manakish Cheese.jpg", category: "fastfood" },
+  { id: 46, name: "Sfiha", price: 5, image: "./images/food/Sfiha.webp", category: "fastfood" },
+  { id: 47, name: "Arayes", price: 5.5, image: "./images/food/Arayes.webp", category: "fastfood" },
+  { id: 48, name: "Falafel Plate", price: 6, image: "./images/food/Falafel Plate.webp", category: "fastfood" },
+  { id: 49, name: "Hummus Plate", price: 5, image: "./images/food/Hummus Plate.avif", category: "fastfood" },
+  { id: 50, name: "Grilled Halloumi", price: 7, image: "./images/food/Grilled Halloumi.webp", category: "fastfood" },
+  { id: 51, name: "Chicken Nuggets", price: 5, image: "./images/food/Chicken Nuggets.webp", category: "fastfood" },
+  { id: 52, name: "French Fries", price: 3, image: "./images/food/French Fries.avif", category: "fastfood" },
+  { id: 53, name: "Cheese Pizza", price: 6, image: "./images/food/Cheese Pizza.webp", category: "fastfood" },
+  { id: 54, name: "Pepperoni Pizza", price: 7, image: "./images/food/Pepperoni Pizza.webp", category: "fastfood" },
+  { id: 55, name: "Vegetarian Pizza", price: 6.5, image: "./images/food/Vegetarian Pizza.webp", category: "fastfood" },
+  { id: 56, name: "Chicken Wings", price: 6, image: "./images/food/Chicken Wings.avif", category: "fastfood" },
+  { id: 57, name: "Beef Burger", price: 7, image: "./images/food/Beef Burger.webp", category: "fastfood" },
+  { id: 58, name: "Lamb Burger", price: 7.5, image: "./images/food/Lamb Burger.webp", category: "fastfood" },
+  { id: 59, name: "Fish Sandwich", price: 6, image: "./images/food/Fish Sandwich.avif", category: "fastfood" },
+  { id: 60, name: "Vegetable Sandwich", price: 5, image: "./images/food/Vegetable Sandwich.webp", category: "fastfood" },
+];
+
+    let cart = [];
+
+    function renderProducts(filter = '') {
+      const sections = {
+        traditional: document.getElementById('traditional-section'),
+        meat: document.getElementById('meat-section'),
+        fastfood: document.getElementById('fastfood-section')
+      };
+      Object.values(sections).forEach(sec => sec.innerHTML = '');
+
+      products.forEach(p => {
+        if (!p.name.toLowerCase().includes(filter.toLowerCase())) return;
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded shadow';
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" class="w-full h-40 object-cover rounded">
+          <h3 class="mt-2 text-lg font-semibold">${p.name}</h3>
+          <p class="text-red-600 font-bold">$${p.price.toFixed(2)}</p>
+          <button onclick="addToCart(${p.id})" class="mt-2 bg-red-500 text-white px-4 py-2 rounded">Add to Cart</button>
+        `;
+        sections[p.category].appendChild(card);
+      });
+    }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      cart.push(product);
+      updateCartCount();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').innerText = cart.length;
+    }
+
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+      renderCartItems();
+    }
+
+    function renderCartItems() {
+      const cartItems = document.getElementById('cart-items');
+      const total = document.getElementById('cart-total');
+      cartItems.innerHTML = '';
+      let sum = 0;
+      cart.forEach((item, index) => {
+        sum += item.price;
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center';
+        li.innerHTML = `
+          <span>${item.name} - $${item.price.toFixed(2)}</span>
+          <button onclick="removeFromCart(${index})" class="text-red-500">Remove</button>
+        `;
+        cartItems.appendChild(li);
+      });
+      total.innerText = sum.toFixed(2);
+    }
+
+    document.getElementById('cart-btn').addEventListener('click', toggleCart);
+    document.getElementById('search').addEventListener('input', (e) => renderProducts(e.target.value));
+    renderProducts();
+  </script>
+</body>
+</html>
